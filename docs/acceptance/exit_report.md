@@ -8,11 +8,20 @@ Contexto y Problema: La generación de energía eléctrica es una de las princip
 
 En resumen, el proyecto busca ofrecer un análisis descriptivo y comparativo robusto para entender las dinámicas y la viabilidad futura de la transición hacia una matriz energética más sostenible en Estados Unidos.
 
-## Resultados del proyecto - Por definir
+## Resultados del proyecto - Entrega 1
 
-- Resumen de los entregables y logros alcanzados en cada etapa del proyecto.
-- Evaluación del modelo final y comparación con el modelo base.
-- Descripción de los resultados y su relevancia para el negocio.
+- Se adjunta evidencias de adquisición y carga de datos desde KaggleHub:
+
+![alt text](image.png)
+
+- Se adjunta evidencia Kaggle :
+
+![alt text](image-1.png)
+
+- Reporte tiempo de ejecucion: 
+
+![alt text](image-2.png)
+
 
 ## Lecciones aprendidas - Por definir
 
