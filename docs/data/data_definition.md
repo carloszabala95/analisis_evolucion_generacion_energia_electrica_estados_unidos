@@ -2,7 +2,7 @@
 
 ## Origen de los datos
 
-- [ ] Especificar la fuente de los datos y la forma en que se obtuvieron. 
+- La base de datos utilizada para este proyecto es una compilación exhaustiva sobre el sector energético de Estados Unidos, alojada en SQLite. Esta información, recolectada de agencias nacionales e internacionales como la EIA y la FERC, es el resultado del esfuerzo de la organización Catalyst Cooperative para centralizar datos. La estructura de la base de datos en SQLite permite el almacenamiento y manejo de archivos en formatos CSV y Parquet de Apache, facilitando su análisis.
 
 ## Especificación de los scripts para la carga de datos
 
