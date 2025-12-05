@@ -5,6 +5,16 @@ import os
 import sqlalchemy as sa
 import pandas as pd
 
+# --- Añadido: configurar backend de matplotlib vía variable de entorno ---
+# Debe ejecutarse antes de cualquier `import matplotlib.pyplot as plt`
+_backend = os.getenv("MATPLOTLIB_BACKEND")
+if _backend:
+    try:
+        import matplotlib
+        matplotlib.use(_backend)
+        print(f"matplotlib backend seteado desde MATPLOTLIB_BACKEND: {_backend}")
+    except Exception as _e:
+        print(f"Advertencia: no se pudo setear matplotlib backend '{_backend}': {_e}")
 
 def load_pudl_path():
     """
@@ -54,7 +64,6 @@ if __name__ == "__main__":
             print(row[0])
 import time
 import pandas as pd
-from connect_pudl import connect_pudl  # Importa la conexión creada antes
 
 # Crear engine
 pudl_engine = connect_pudl()
@@ -98,7 +107,6 @@ print(resultado)
 
 import time
 import pandas as pd
-from connect_pudl import connect_pudl   # Importa la función que crea el engine
 
 # Crear engine
 pudl_engine = connect_pudl()
@@ -495,8 +503,9 @@ cems_cols = [
 ]
 
 # Cargar dataset CEMS con Dask
+dataset_path = load_pudl_path()
 comanche_cems_dd = dd.read_parquet(
-    f"{catalystcooperative_pudl_project_path}/pudl_parquet/core_epacems__hourly_emissions.parquet",
+    f"{dataset_path}/pudl_parquet/core_epacems__hourly_emissions.parquet",
     engine="pyarrow",
     filters=[
         ("state", "=", "CO"),

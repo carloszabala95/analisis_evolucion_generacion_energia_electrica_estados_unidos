@@ -1,4 +1,5 @@
 # setup_pudl_local.py
+from pathlib import Path
 import time
 import os
 import sys
@@ -53,6 +54,16 @@ def main():
         print(f"Usando ruta local (ajústala si es necesario): {catalystcooperative_pudl_project_path}")
 
     print('Data source import complete.')
+
+    # Detectar la raíz del proyecto (dos carpetas arriba de scripts/)
+    project_root = Path(__file__).resolve().parents[1]
+
+    pudl_path_file = project_root / "pudl_path.txt"
+    pudl_path_file.write_text(catalystcooperative_pudl_project_path.strip(), encoding="utf-8")
+
+    print(f"\nRuta PUDL guardada en: {pudl_path_file}")
+    print(f"Contenido del archivo:")
+    print(pudl_path_file.read_text(), "\n")
 
     # ============================
     # LISTAR ARCHIVOS DEL DATASET
