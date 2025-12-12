@@ -6,4 +6,5 @@ sqlalchemy
 matplotlib
 seaborn
 scikit-learn
+streamlit
 # kagglehub  # opcional; inclúyelo solo si descargarás desde Kaggle

@@ -17,6 +17,7 @@ dependencies = [
   "matplotlib",
   "seaborn",
   "scikit-learn",
+  "streamlit",
   "kagglehub"   # opcional; quítalo si no descargarás desde Kaggle
 ]
 
