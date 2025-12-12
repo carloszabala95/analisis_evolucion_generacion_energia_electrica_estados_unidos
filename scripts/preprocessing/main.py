@@ -28,17 +28,27 @@ import dask.dataframe as dd
 # Iniciar medición de tiempo
 start = time.perf_counter()
 
-# Ruta al directorio con los archivos Parquet (ajusta si es Kaggle o local)
-# Intenta leer la ruta desde la variable de entorno PUDL_DATASET_PATH; si no está definida, usa una ruta por defecto local.
-pudl_path_str = os.environ.get("PUDL_DATASET_PATH", "data/catalystcooperative_pudl_project")
-pudl_path = Path(pudl_path_str)
+# Determinar ruta PUDL con prioridad:
+# 1) archivo scripts/preprocessing/pudl_path.txt (producción por data_acquisition)
+# 2) variable de entorno PUDL_DATASET_PATH
+# 3) ruta por defecto local
+this_dir = Path(__file__).resolve().parent
+pudl_txt = this_dir / "pudl_path.txt"
+if pudl_txt.exists():
+    pudl_path = Path(pudl_txt.read_text(encoding="utf-8").strip())
+    print(f"Usando ruta PUDL desde pudl_path.txt: {pudl_path}")
+else:
+    pudl_path_str = os.environ.get("PUDL_DATASET_PATH", "data/catalystcooperative_pudl_project")
+    pudl_path = Path(pudl_path_str)
+    print(f"Usando ruta PUDL desde env/default: {pudl_path}")
+
 pq_path = pudl_path / "pudl_parquet"
 
 # Verificación de existencia del directorio parquet
 if not pq_path.exists():
     raise FileNotFoundError(
-        f"No se encontró el directorio: {pq_path}. "
-        "Define la variable de entorno PUDL_DATASET_PATH o verifica la ruta local."
+        f"No se encontró el directorio: {pq_path}.\n"
+        "Asegúrate de que el dataset PUDL esté descargado en esa ruta o actualiza pudl_path.txt / PUDL_DATASET_PATH."
     )
 
 # Cargar el archivo parquet usando Dask
