@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pandas
+numpy
+sqlalchemy
+matplotlib
+seaborn
+scikit-learn
+# kagglehub  # opcional; inclúyelo solo si descargarás desde Kaggle
