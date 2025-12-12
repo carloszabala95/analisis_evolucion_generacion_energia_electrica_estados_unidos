@@ -5,11 +5,19 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nombre_paquete"
 version = "0.1.0"
-authors = [{name = "autor1", email = "correo@correo.com"}]
+authors = [{ name = "autor1", email = "correo@correo.com" }]
 description = "Descripción del proyecto"
-requires-python = ">3.8"
+requires-python = ">=3.9"
 dependencies = [
-    "numpy"
+  "fastapi",
+  "uvicorn[standard]",
+  "pandas",
+  "numpy",
+  "sqlalchemy",
+  "matplotlib",
+  "seaborn",
+  "scikit-learn",
+  "kagglehub"   # opcional; quítalo si no descargarás desde Kaggle
 ]
 
 [tool.setuptools.packages.find]

@@ -170,6 +170,11 @@ comanche_ferc1 = (
     .assign(report_date=lambda x: pd.to_datetime(x["report_year"].astype("string")))
 )
 
+# Guardar CSV de muestra
+output_dir = Path("data")
+output_dir.mkdir(exist_ok=True)
+comanche_ferc1.to_csv(output_dir / "pudl_sample.csv", index=False)
+
 end_time = time.time()
 
 # ============================
