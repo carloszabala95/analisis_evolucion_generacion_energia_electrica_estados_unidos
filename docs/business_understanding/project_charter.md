@@ -75,11 +75,9 @@ Se utilizará una extensa base de datos SQLite del proyecto PUDL de Catalyst Coo
 
 [Descripción del presupuesto asignado al proyecto]
 
-## Stakeholders - Por Definir
+## Stakeholders
 
-- [Nombre y cargo de los stakeholders del proyecto]
-- [Descripción de la relación con los stakeholders]
-- [Expectativas de los stakeholders]
+Entre las principales partes interesadas en el presente proyecto de análisis de grandes bases de datos están: Unidad de Planeación Minero Energética (UPME), XM SA ESP Administradores del mercado Energético, Empresas Generadoras de Energía en Colombia (EPM, Isagen, EMGESA SA, Termovalle, entre otras) y Empresas Distribuidoras de Energía Eléctrica (ENEL, EPM, entre otras). Todas las partes interesadas mencionadas previamente, son empresas que participan en algún eslabon del mercado de generación, transmisión y comercialización de energía eléctrica en Colombia.
 
 ## Aprobaciones - Por Definir
 

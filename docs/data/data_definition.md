@@ -63,13 +63,16 @@
 
 ## Referencias a rutas o bases de datos origen y destino
 
-- [ ] Especificar las rutas o bases de datos de origen y destino para los datos.
+- Se emplearan una base de datos muy completa sobre el sector energético de Estados Unidos soportada en SQLite que compile un gran volumen de información recolectado de distintas agencias Nacionales e Internacionales de Energía (EIA, FERC, entre otros).Fuente: https://catalyst.coop/pudl/
+- 
+- Se manejaran principalmente datos númericos tipo float de consumo de energía eléctrica dado en Vatios-Hora (Wh) a lo largo de las últimas 2 decadas, la medida de tiempo se hace en años, que corresponde a valores enteros. También se estudian valores de tipo categorico para las ciudades, los estados y los tipos de tecnologías de generación eléctica a estudiar. *La base de datos seleccionada para la realización del presente proyecto es el resultado de un esfuerzo muy grande que está realizando la organización Catalyst Cooperative actualmente para la compilación de información muy completa del funcionamiento del Sector Energético no solo en Estados Unidos sino a Nivel Mundial mediante la centralización de los datos provenientes de diferentes Agencias Nacionales e Internacionales en una sola base de datos utlizando actualmente la plataforma SQLite.
+
 
 ### Rutas de origen de datos
 
-- [ ] Especificar la ubicación de los archivos de origen de los datos.
-- [ ] Especificar la estructura de los archivos de origen de los datos.
-- [ ] Describir los procedimientos de transformación y limpieza de los datos.
+- Origen Base de Datos Actualizada: (https://www.kaggle.com/datasets/catalystcooperative/pudl-project/data)
+- Se utilizará una base de datos muy grande que contiene datos técnicos y finanancieros del sector energético Estadounidense que incluye generación y consumo de energía eléctrica, gas y combustibles fósiles. Esta base de datos esta estructurada en SQLite, la cual almacena los archivos en formato CSV, XML y Parquet de Apache.
+- Para la exploración y el análisis de los datos se usará el entorno de Dask, teniendo en cuenta la gran compatibilidad para el manejo de archivos tipo Parquet, una gran velocidad de procesamiento de la información y una gran versatilidad en la manipulación de la información considerando que parte de los datos con esta tecnología se almacenan y manipulan en la memoria RAM mientras que el resto son almacenados en la memoria ROM (Disco Duro o SSD) antes de ser analizados, requiriendo así equipos con una memoria RAM más reducida que en el caso de otras tecnologías como Apache Spark, reduciendo considerablemente los costos. Dask es un entorno veloz para la manipulación de grandes volúmenes de datos, también cuenta con herramientas muy poderosas para llevar a cabo análisis estadístico de un volumen muy grande de datos e incluso llevar a cabo proyectos de Machine Learning con dichos datos gracias a su gran compatibilidad con el entorno de ciencia de datos de Python. La principal desventaja de utilizar Dask radica en que si se maneja volumenes demasiado grandes de datos, se requieren tiempos de procesamiento considerablemente mayores que otras tecnologías como Apache Spark debido a usa menores cantidades de Memoria RAM más veloz para la manipulación de datos, prolongando así los tiempos de procesamiento.
 
 ### Base de datos de destino
 
