@@ -10,6 +10,14 @@ BASE = Path(os.getenv("PUDL_PATH", "docs/data"))
 CSV = BASE / "comanche_ferc1_annual.csv"
 
 
+@app.get("/")
+def root():
+    return {
+        "message": "Servicio activo. Endpoints disponibles: /health, /sample, /forecast",
+        "csv_path": str(CSV),
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
