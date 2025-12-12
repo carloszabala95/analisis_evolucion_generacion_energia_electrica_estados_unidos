@@ -27,3 +27,9 @@ Desafíos y Oportunidades para la Analítica de Datos: La analítica de datos pu
 - Pronóstico de la Demanda: Modelos predictivos para anticipar cambios en el consumo y optimizar la oferta de energía.
 
 - Gestión de Redes Inteligentes (Smart Grids): Uso de analítica avanzada para detectar anomalías, reducir pérdidas y mejorar la eficiencia operativa.
+
+- URLs de los servicios expuestos (Railway):
+    - https://jubilant-endurance-production.up.railway.app/health
+    
+- Evidencias : 
+    ![alt text](image.png)
