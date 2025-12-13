@@ -12,6 +12,8 @@ Luego se analizará en mayor detalle el conjunto de datos RARE, vcerare en PUDL,
 
 ## Resumen general de los datos
 
+# Análisis Exploratorio Operación y Generación Planta Comanche
+
 Para la tabla que contiene los datos de generación y operación de la planta de Comanche, obtuvimos el siguiente resumen de datos:
 
 <class 'pandas.core.frame.DataFrame'>
@@ -128,14 +130,163 @@ Datos filtrados para la planta Comanche (plant_id_pudl = 126):
 17080         2024            2803         comanche            126  ...     33.500000             11.372652          22.152953   2024-01-01
 17220         2020            4404         comanche            126  ...     31.600000             11.812938          19.755095   2020-01-01
 
+# Análisis Potencial de Generación de Energía Eléctrica y Solar en Estados Unidos:
+
+Uso del conjunto de datos de energía renovable de adecuación de recursos (RARE) de VCE: El conjunto de datos RARE, vcerare en PUDL, fue generado por Vibrant Clean Energy y consta de perfiles horarios de generación renovable por condado para energía solar fotovoltaica, eólica terrestre y eólica marina en Estados Unidos continental. Se generó utilizando los resultados del modelo meteorológico de actualización rápida de alta resolución (HRRR) de la NOAA. Visite nuestra página de fuentes de datos de VCE para obtener más información. VCE publica estos datos bajo la licencia de atribución CC-BY-4.0.
+
+Acceso a VCE RARE mediante CSV o Parquet Los datos de VCE RARE se distribuyen en dos formatos:
+
+Archivos CSV sin procesar (Zenodo)
+Archivos PUDL Parquet procesados (Kaggle, AWS S3, Zenodo)
+Archivos CSV sin procesar (Zenodo): Los datos sin procesar se organizan en varios archivos CSV. Cada uno contiene un año para los datos de un tipo de generación (solar fotovoltaica, eólica terrestre, eólica marina), una columna de índice para la hora del año (1-8760) y una columna para cada uno de los aproximadamente 3000 condados que contienen el factor de capacidad modelado. Este formato está optimizado para su uso en Excel y limita el número de filas y columnas para que Excel pueda gestionarlo. Consulte el archivo README en el archivo de Zenodo para obtener más detalles sobre los datos sin procesar.
+
+*Archivos PUDL Parquet procesados (Kaggle, AWS S3, versiones de PUDL con versiones en Zenodo): *Los datos procesados se publican como un único archivo Apache Parquet. Parquet es un formato de archivo abierto diseñado para realizar análisis con conjuntos de datos más grandes. Los datos procesados se han rediseñado a partir del formato ancho original para utilizar un formato de datos ordenado. El condado se integra en su propia columna en lugar de ser un encabezado de columna.
+
+Se han añadido columnas adicionales para facilitar la selección de datos y permitir su uso en combinación con otros conjuntos de datos.
+
+Latitud
+Longitud
+Código FIPS del condado
+Año del informe
+Marca de tiempo (UTC)
+Campos separados para el nombre del estado y el condado (los encabezados de columna de datos sin procesar tienen el formato County_Name_State_Name).
+Consulte nuestro diccionario de datos para obtener más información sobre el esquema de la tabla procesada.
+
+¿Cuál debería usar?
+
+Si desea o necesita modificar el diseño de los datos para incorporarlos a su modelo, le interesa un subconjunto específico de datos, desea conectarlos a datos geoespaciales o desea ver o ejecutar análisis de todos los datos a la vez, ¡los archivos PUDL Parquet procesados son la solución ideal! Para contextualizar, el límite de filas en Excel es de poco más de un millón. La tabla PUDL procesada contiene 136 437 000 filas. A continuación, le mostraremos cómo gestionar este conjunto de datos sin sobrecargar su ordenador.
+
+Si trabaja con Excel o si los datos de formato ancho 8760 tienen la forma exacta que necesita para el modelado, puede que prefiera usar los archivos CSV sin procesar.
+
+Este cuaderno también incluye ejemplos de cómo seleccionar y descargar un subconjunto de los datos Parquet como CSV.
 
 ## Resumen de calidad de los datos
 
+# Análisis Exploratorio Operación y Generación Planta Comanche
+
 Como se puede observar en el resumen de la tabla de datos para la planta Comanche, no exiten valores nulos ni anómalos en el conjunto de datos explorado, lo anterior se debe a que los datos generados fueron posteriormente tratados por los administradores de la base de datos PUDL en donde se recopila toda está información, la cual es actualizada constantemente por los analistas de datos que colaboran con esta iniciativa.
+
+# Análisis Potencial de Generación de Energía Eléctrica y Solar en Estados Unidos:
+
+Primero, definiremos un par de rutas que apuntan a la ubicación de los datos en Kaggle. Luego, leeremos todo el conjunto de datos VCE RARE en un dataframe de Pandas y lo inspeccionaremos.
+
+ state place_name        datetime_utc  report_year  hour_of_year  \
+0    AL    autauga 2014-01-01 00:00:00         2014             1   
+1    AL    autauga 2014-01-01 01:00:00         2014             2   
+2    AL    autauga 2014-01-01 02:00:00         2014             3   
+3    AL    autauga 2014-01-01 03:00:00         2014             4   
+4    AL    autauga 2014-01-01 04:00:00         2014             5   
+5    AL    autauga 2014-01-01 05:00:00         2014             6   
+6    AL    autauga 2014-01-01 06:00:00         2014             7   
+7    AL    autauga 2014-01-01 07:00:00         2014             8   
+8    AL    autauga 2014-01-01 08:00:00         2014             9   
+9    AL    autauga 2014-01-01 09:00:00         2014            10   
+
+  county_id_fips   latitude  longitude  capacity_factor_solar_pv  \
+0          01001  32.533913 -86.647438                       0.0   
+1          01001  32.533913 -86.647438                       0.0   
+2          01001  32.533913 -86.647438                       0.0   
+3          01001  32.533913 -86.647438                       0.0   
+4          01001  32.533913 -86.647438                       0.0   
+5          01001  32.533913 -86.647438                       0.0   
+6          01001  32.533913 -86.647438                       0.0   
+7          01001  32.533913 -86.647438                       0.0   
+8          01001  32.533913 -86.647438                       0.0   
+9          01001  32.533913 -86.647438                       0.0   
+
+   capacity_factor_onshore_wind  capacity_factor_offshore_wind  
+0                      0.031775                            0.0  
+1                      0.029567                            0.0  
+2                      0.022441                            0.0  
+3                      0.040363                            0.0  
+4                      0.042450                            0.0  
+5                      0.022317                            0.0  
+6                      0.038986                            0.0  
+7                      0.043499                            0.0  
+8                      0.017066                            0.0  
+9                      0.012301                            0.0  
+CPU times: user 2.46 s, sys: 3.26 s, total: 5.73 s
+Wall time: 6.88 s
+
+- Leer los datos de Parquet y SQLite con Pandas:
+
+Tamaño del Dataset completo .parquet.
+
+Tamaño del archivo: 0.02 MB
+Número de filas: 1551135931
+Número de columnas: 42
+CPU times: user 450 ms, sys: 32.9 ms, total: 483 ms
+Wall time: 886 ms
+
+Tamaño del dataset intermediario en Pandas.
+
+<class 'dask.dataframe.dask_expr.DataFrame'>
+Columns: 11 entries, state to capacity_factor_offshore_wind
+dtypes: datetime64[ms](1), float32(5), int32(2), string(3)CPU times: user 1.67 ms, sys: 0 ns, total: 1.67 ms
+Wall time: 1.68 ms
+
+- Cargar datos geoespaciales para crear mapas: La versión Parquet procesada de los datos VCE RARE incluye códigos FIPS estandarizados, lo que facilita su integración con datos geoespaciales del Censo de EE. UU. y otras fuentes a nivel de condado. PUDL incluye la base de datos del Perfil Demográfico del Censo 1 (PD1), que proporciona información demográfica a nivel de sector censal, condado y estado, y también proporciona geometrías para cada una de estas áreas. Cargaremos los datos del PD1 y obtendremos las geometrías para crear mapas que muestren los perfiles de generación de energía renovable.
+
+![alt text](image-1.png)
+
+- Filtrar los datos de un solo estado: Para agilizar el proceso en los ejemplos a continuación, trabajaremos con un solo estado a la vez. Podemos seleccionar los datos de un solo estado del marco de datos nacional utilizando la abreviatura del estado.
+
+        state place_name        datetime_utc  report_year  hour_of_year  \
+1883400    CO      adams 2014-01-01 00:00:00         2014             1   
+1883401    CO      adams 2014-01-01 01:00:00         2014             2   
+1883402    CO      adams 2014-01-01 02:00:00         2014             3   
+1883403    CO      adams 2014-01-01 03:00:00         2014             4   
+1883404    CO      adams 2014-01-01 04:00:00         2014             5   
+1883405    CO      adams 2014-01-01 05:00:00         2014             6   
+1883406    CO      adams 2014-01-01 06:00:00         2014             7   
+1883407    CO      adams 2014-01-01 07:00:00         2014             8   
+1883408    CO      adams 2014-01-01 08:00:00         2014             9   
+1883409    CO      adams 2014-01-01 09:00:00         2014            10   
+
+        county_id_fips   latitude   longitude  capacity_factor_solar_pv  \
+1883400          08001  39.872505 -104.330345                       0.0   
+1883401          08001  39.872505 -104.330345                       0.0   
+1883402          08001  39.872505 -104.330345                       0.0   
+1883403          08001  39.872505 -104.330345                       0.0   
+1883404          08001  39.872505 -104.330345                       0.0   
+1883405          08001  39.872505 -104.330345                       0.0   
+1883406          08001  39.872505 -104.330345                       0.0   
+1883407          08001  39.872505 -104.330345                       0.0   
+1883408          08001  39.872505 -104.330345                       0.0   
+1883409          08001  39.872505 -104.330345                       0.0   
+
+         capacity_factor_onshore_wind  capacity_factor_offshore_wind  
+1883400                      0.045540                            0.0  
+1883401                      0.138248                            0.0  
+1883402                      0.361750                            0.0  
+1883403                      0.451514                            0.0  
+1883404                      0.529973                            0.0  
+1883405                      0.669029                            0.0  
+1883406                      0.719865                            0.0  
+1883407                      0.640629                            0.0  
+1883408                      0.434655                            0.0  
+1883409                      0.301085                            0.0  
+CPU times: user 3.04 s, sys: 2.69 s, total: 5.73 s
+Wall time: 5.79 s
+
+- Unir geometrías de condado a perfiles de generación: Aquí fusionamos las geometrías de condado para que cada registro en el marco de datos de Colorado sepa a qué geografía pertenece.
+
+county_id_fips	geometry	state	place_name	datetime_utc	report_year	hour_of_year	latitude	longitude	capacity_factor_solar_pv	capacity_factor_onshore_wind	capacity_factor_offshore_wind
+0	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 00:00:00	2014	1	40.652908	-105.34108	0.0	0.761232	0.0
+1	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 01:00:00	2014	2	40.652908	-105.34108	0.0	0.710108	0.0
+2	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 02:00:00	2014	3	40.652908	-105.34108	0.0	0.635415	0.0
+3	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 03:00:00	2014	4	40.652908	-105.34108	0.0	0.595043	0.0
+4	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 04:00:00	2014	5	40.652908	-105.34108	0.0	0.514058	0.0
+5	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 05:00:00	2014	6	40.652908	-105.34108	0.0	0.459968	0.0
+6	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 06:00:00	2014	7	40.652908	-105.34108	0.0	0.521629	0.0
+7	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 07:00:00	2014	8	40.652908	-105.34108	0.0	0.588881	0.0
+8	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 08:00:00	2014	9	40.652908	-105.34108	0.0	0.623976	0.0
+9	08069	MULTIPOLYGON (((-105.05672 40.34928, -105.0567 40.34896, -105.05645 40.34668, -105.05644 40.34663, -105.05638 40.34612, -105.05636 40.34591, -105.05628 40.34518, -105.05607 40.34303, -105.05603 40.34265, -105.05602 40.34258, -105.05601 40.34249, -105.056 40.34232, -105.05597 40.34206, -105.05596 40.34201, -105.05596 40.34199, -105.05596 40.34194, -105.05589 40.3413, -105.05589 40.34129, -105.05587 40.34115, -105.05577 40.33993, -105.05566 40.33939, -105.05564 40.33938, -105.05563 40.33937, -105.05554 40.3385, -105.05513 40.33518, -105.05514 40.33514, -105.05514 40.33512, -105.05519 40.33451, -105.05519 40.33401, -105.05517 40.3321, -105.05517 40.32797, -105.0552 40.32725, -105.05522 40.32643, -105.05522 40.32484, -105.05522 40.32433, -105.05522 40.32403, -105.05522 40.32328, -105.05522 40.32268, -105.05522 40.32242, -105.05522 40.32105, -105.05523 40.3205, -105.05525 40.32009, -105.05532 40.31993, -105.05533 40.31991, -105.05533 40.31989, -105.05535 40.31983, -105.05537 40.31964, -...	CO	larimer	2014-01-01 09:00:00	2014	10	40.652908	-105.34108	0.0	0.677098	0.0
+
 
 ## Variable objetivo
 
-# Análisis Exploratorio Planta Comanche:
+# Análisis Exploratorio Operación y Generación Planta Comanche
 
 A continuación se presenta un resumen del análisis de datos exploratorio que se realizó a la planta Comanche:
 
@@ -241,6 +392,36 @@ En particular, la Unidad 3 pasó la mayor parte de 2020 fuera de servicio y, des
 ![alt text](<Intensidad bruta de emisiones de CO2 planta Comanche.png>)
 
 ![alt text](<newplot (7).png>)
+
+# Análisis Potencial de Generación de Energía Eléctrica y Solar en Estados Unidos:
+
+- Visualización de los perfiles de generación eólica y solar: Comparación de la energía eólica y solar durante una sola hora. Analicemos los factores de capacidad eólica y solar en Colorado durante una sola hora, uno junto al otro.
+
+![alt text](image-2.png)
+
+- Mapas animados de factor de capacidad: Observar cómo varían las emisiones de energía renovable con el tiempo es mucho más interesante que una instantánea estática. Matplotlib cuenta con herramientas que nos permiten crear mapas animados a partir de las series temporales horarias de los condados contenidas en los datos RARE. La función animate_capacity_factor(), a continuación, nos permitirá crear con flexibilidad diversos mapas animados.
+
+* Un día ventoso en Texas: En lugar de Colorado, echemos un vistazo a Texas, que ahora tiene más capacidad eólica y solar instalada que cualquier otro estado. La función anterior guardó el video en el disco, pero podemos leer ese archivo y reproducirlo en el bloc de notas en la celda contigua. También puedes descargar el archivo a tu computadora y verlo en un navegador web o reproductor de video. Expande la sección "Salida" en la barra lateral derecha de este bloc de notas (en Kaggle) y coloca el cursor sobre el nombre del archivo. Verás tres puntos a la derecha del nombre del archivo con opciones para descargarlo y guardarlo localmente.
+
+![alt text](image-3.png)
+
+* Un día soleado en Texas: Ahora veamos los factores de capacidad solar durante el mismo día en Texas.
+
+![alt text](image-4.png)
+
+- Exploraciones estadísticas: Un histograma del factor de capacidad para el Condado de Logan en Colorado:
+
+ ![alt text](image-5.png)
+
+- Una Gráfica interactiva con Altair de Factores de Capacidad de Energía Eólica y Solar por Condados:
+
+![alt text](image-6.png)
+
+- Perfiles de Energía Eólica y Solar de Estados Unidos: Finalmente se realizó un mapa de perfil energético de Estados Unidos tomando todos los datos de energía eólica y energía solar medidos para un periodo determinado en cada uno de los 3144 condados de la Unión, teniendo en cuenta que los datos registrados compilan los resultados de mediciones meteorológicas realizadas entre los años 2014 y 2024.
+
+![alt text](image-7.png)
+
+![alt text](image-8.png)
 
 ## Variables individuales
 
