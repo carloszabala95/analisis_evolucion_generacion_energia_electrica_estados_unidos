@@ -43,7 +43,7 @@ Modelos evaluados:
 - Evitar cargas superiores a 200 MB mediante el uploader.
 
 - Se intentó realizar un análisis y pronóstico a nivel de condado, pero se presentó un error de memoria insuficiente: el código intentó reservar aproximadamente 5.7 GB de RAM para un arreglo float64 de forma (1, 767,376,005). Con la RAM disponible en Railway (1 GB) no es posible completar esa operación. Esto sugiere que el CSV subido es demasiado grande o que, al transformar/convertir columnas, se está generando un arreglo enorme en memoria.
-- ![alt text](image-4.png)
+- ![alt text](image.png)
 
 ## Referencias
 - Datos de ejemplo: `docs/data/comanche_ferc1_annual.csv` (o CSV subido en app).
