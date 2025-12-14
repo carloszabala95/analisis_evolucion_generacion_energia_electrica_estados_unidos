@@ -165,11 +165,12 @@ def main():
                 index=0,
             )
         with col4:
+            max_test = max(1, len(df) - 1)
             test_years = st.slider(
                 "Años para test (hold-out crono)",
                 min_value=1,
-                max_value=min(10, max(2, len(df) - 2)),
-                value=3,
+                max_value=max_test,
+                value=min(3, max_test),
             )
 
         poly_degree = 2
@@ -267,11 +268,12 @@ def main():
                         key="upload_model",
                     )
                 with col4:
+                    max_test_up = max(1, len(df_up) - 1)
                     test_years = st.slider(
                         "Años para test (hold-out crono)",
                         min_value=1,
-                        max_value=min(10, max(2, len(df_up) - 2)),
-                        value=3,
+                        max_value=max_test_up,
+                        value=min(3, max_test_up),
                         key="upload_test_years",
                     )
 
