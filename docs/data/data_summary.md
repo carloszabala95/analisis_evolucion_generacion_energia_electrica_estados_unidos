@@ -403,11 +403,11 @@ En particular, la Unidad 3 pasó la mayor parte de 2020 fuera de servicio y, des
 
 * Un día ventoso en Texas: En lugar de Colorado, echemos un vistazo a Texas, que ahora tiene más capacidad eólica y solar instalada que cualquier otro estado. La función anterior guardó el video en el disco, pero podemos leer ese archivo y reproducirlo en el bloc de notas en la celda contigua. También puedes descargar el archivo a tu computadora y verlo en un navegador web o reproductor de video. Expande la sección "Salida" en la barra lateral derecha de este bloc de notas (en Kaggle) y coloca el cursor sobre el nombre del archivo. Verás tres puntos a la derecha del nombre del archivo con opciones para descargarlo y guardarlo localmente.
 
-![alt text](image-3.png)
+<video controls src="Eolica Texas.mp4" title="Title"></video>
 
 * Un día soleado en Texas: Ahora veamos los factores de capacidad solar durante el mismo día en Texas.
 
-![alt text](image-4.png)
+<video controls src="Solar Texas.mp4" title="Title"></video>
 
 - Exploraciones estadísticas: Un histograma del factor de capacidad para el Condado de Logan en Colorado:
 
@@ -419,18 +419,7 @@ En particular, la Unidad 3 pasó la mayor parte de 2020 fuera de servicio y, des
 
 - Perfiles de Energía Eólica y Solar de Estados Unidos: Finalmente se realizó un mapa de perfil energético de Estados Unidos tomando todos los datos de energía eólica y energía solar medidos para un periodo determinado en cada uno de los 3144 condados de la Unión, teniendo en cuenta que los datos registrados compilan los resultados de mediciones meteorológicas realizadas entre los años 2014 y 2024.
 
-![alt text](image-7.png)
+<video controls src="Eolica USA.mp4" title="Title"></video>
 
-![alt text](image-8.png)
+<video controls src="Solar USA.mp4" title="Title"></video>
 
-## Variables individuales
-
-En esta sección se presenta un análisis detallado de cada variable individual. Se muestran estadísticas descriptivas, gráficos de distribución y de relación con la variable objetivo (si aplica). Además, se describen posibles transformaciones que se pueden aplicar a la variable.
-
-## Ranking de variables
-
-En esta sección se presenta un ranking de las variables más importantes para predecir la variable objetivo. Se utilizan técnicas como la correlación, el análisis de componentes principales (PCA) o la importancia de las variables en un modelo de aprendizaje automático.
-
-## Relación entre variables explicativas y variable objetivo
-
-En esta sección se presenta un análisis de la relación entre las variables explicativas y la variable objetivo. Se utilizan gráficos como la matriz de correlación y el diagrama de dispersión para entender mejor la relación entre las variables. Además, se pueden utilizar técnicas como la regresión lineal para modelar la relación entre las variables.
