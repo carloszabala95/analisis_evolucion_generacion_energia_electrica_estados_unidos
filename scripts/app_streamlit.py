@@ -86,7 +86,8 @@ def train_and_forecast(
 
     metrics = {
         "MAE": float(mean_absolute_error(y_test_eval, y_pred_eval)),
-        "RMSE": float(mean_squared_error(y_test_eval, y_pred_eval, squared=False)),
+        # Calculamos RMSE manualmente para evitar dependencias de la firma "squared"
+        "RMSE": float(np.sqrt(mean_squared_error(y_test_eval, y_pred_eval))),
         "R2": float(r2_score(y_test_eval, y_pred_eval)),
     }
 
