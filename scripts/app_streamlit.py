@@ -118,9 +118,9 @@ def main():
 
     section = st.sidebar.radio(
         "Seccion",
-        ["Pronostico", "Subir CSV", "Galeria"],
+        ["Pronostico", "Subir CSV", "Galeria", "Videos"],
         index=0,
-        help="Elige si ver el Pronostico, subir un CSV o la galeria de imagenes.",
+        help="Elige si ver el Pronostico, subir un CSV, la galeria de imagenes o videos.",
     )
 
     if section == "Pronostico":
@@ -334,7 +334,7 @@ def main():
         else:
             st.info("No se ha cargado ningún archivo.")
 
-    else:
+    elif section == "Galeria":
         st.subheader("Galeria de imagenes del estudio")
         image_summaries = {
             # "ejemplo.png": "Descripcion breve de la imagen."
@@ -374,6 +374,17 @@ def main():
                     st.image(str(p), caption=caption, use_container_width=True)
                     if summary:
                         st.caption(summary)
+    elif section == "Videos":
+        st.subheader("Videos del estudio")
+        video_dir = Path(os.getenv("VIDEO_PATH", BASE))
+        video_paths = sorted(
+            [p for p in video_dir.glob("**/*") if p.suffix.lower() in {".mp4", ".mov", ".m4v"}]
+        )
+        if not video_paths:
+            st.info(f"No se encontraron videos en {video_dir}.")
+        else:
+            for vp in video_paths:
+                st.video(str(vp))
 
 
 if __name__ == "__main__":
