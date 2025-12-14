@@ -45,5 +45,7 @@ Modelos evaluados:
 - Se intentó realizar un análisis y pronóstico a nivel de condado, pero se presentó un error de memoria insuficiente: el código intentó reservar aproximadamente 5.7 GB de RAM para un arreglo float64 de forma (1, 767,376,005). Con la RAM disponible en Railway (1 GB) no es posible completar esa operación. Esto sugiere que el CSV subido es demasiado grande o que, al transformar/convertir columnas, se está generando un arreglo enorme en memoria.
 - ![alt text](image.png)
 
+- Al extender el horizonte de predicción, el GradientBoostingRegressor tiende a generar valores constantes debido a que los modelos basados en árboles no extrapolan fuera del rango observado y convergen hacia valores promedio en ausencia de nueva información. En contraste, la regresión lineal mantiene una tendencia explícita en función del tiempo, lo que le permite un mejor comportamiento en escenarios de predicción de largo plazo con series anuales cortas.
+
 ## Referencias
 - Datos de ejemplo: `docs/data/comanche_ferc1_annual.csv` (o CSV subido en app).
