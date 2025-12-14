@@ -10,7 +10,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import Pipeline
 
-# Rutas base; puedes sobrescribir con variables de entorno
+# Paths (override with env vars)
 BASE = Path(os.getenv("PUDL_PATH", "docs/data"))
 CSV = BASE / "comanche_ferc1_annual.csv"
 IMG_DIR = Path(os.getenv("IMG_PATH", BASE))
@@ -61,7 +61,6 @@ def train_and_forecast(
     else:
         y = y_raw
 
-    # Split cronológico: últimos test_years como test
     if test_years >= len(df):
         test_years = max(1, len(df) // 5)
     X = df[["report_year"]].values
@@ -86,7 +85,6 @@ def train_and_forecast(
 
     metrics = {
         "MAE": float(mean_absolute_error(y_test_eval, y_pred_eval)),
-        # Calculamos RMSE manualmente para evitar dependencias de la firma "squared"
         "RMSE": float(np.sqrt(mean_squared_error(y_test_eval, y_pred_eval))),
         "R2": float(r2_score(y_test_eval, y_pred_eval)),
     }
@@ -115,24 +113,29 @@ def train_and_forecast(
 
 
 def main():
-    st.title("Analisis de Generación Eléctrica - Resultados y Pronósticos")
-    st.subheader("Se debe seleccionar una opción en la barra lateral.")
+    st.title("Analisis de Generacion Electrica - Resultados y Pronosticos")
+    st.subheader("Selecciona una opcion en la barra lateral.")
 
     section = st.sidebar.radio(
-        "Sección",
-        ["Pronóstico", "Galería"],
+        "Seccion",
+        ["Pronostico", "Subir CSV", "Galeria"],
         index=0,
-        help="Elige si ver el Pronóstico o la galería de imágenes.",
+        help="Elige si ver el Pronostico, subir un CSV o la galeria de imagenes.",
     )
 
-    if section == "Pronóstico":
-        st.write("Predicción Planta de energía (Se debe cargar el csv por analizar).")
-        st.write(f"Fuente de datos: `{CSV}`")
-        try:
-            df = load_data(CSV)
-        except FileNotFoundError as exc:
-            st.error(str(exc))
-            st.stop()
+    if section == "Pronostico":
+        st.write("Prediccion Planta de energia (puedes usar el CSV del repo o subir uno).")
+        st.write(f"Fuente de datos por defecto: `{CSV}`")
+        upload = st.file_uploader("Sube un CSV opcional para analizar", type="csv")
+        if upload:
+            df = pd.read_csv(upload)
+            st.success("Usando CSV subido manualmente.")
+        else:
+            try:
+                df = load_data(CSV)
+            except FileNotFoundError as exc:
+                st.error(str(exc))
+                st.stop()
 
         numeric_cols = [
             "net_generation_mwh",
@@ -171,19 +174,19 @@ def main():
 
         poly_degree = 2
         if model_name == "PolynomialRegression":
-            poly_degree = st.slider("Grado polinómico", min_value=2, max_value=5, value=2)
+            poly_degree = st.slider("Grado polinomico", min_value=2, max_value=5, value=2)
 
         log_target = False
         if df[target].min() > 0:
             log_target = st.checkbox(
                 "Usar log1p(y) en el objetivo",
                 value=False,
-                help="Transforma y -> log(1+y) para ajustar con el modelo y luego revierte la predicción.",
+                help="Transforma y -> log(1+y) para ajustar y luego revierte la prediccion.",
             )
         else:
             st.info("Log1p desactivado: la serie contiene valores <= 0.")
 
-        st.subheader("Datos históricos (últimas filas)")
+        st.subheader("Datos historicos (ultimas filas)")
         st.dataframe(df.tail(10))
 
         results = train_and_forecast(
@@ -196,16 +199,16 @@ def main():
             log_target,
         )
 
-        st.subheader(f"Métricas (test cronológico, {test_years} años)")
+        st.subheader(f"Metricas (test cronologico, {test_years} años)")
         m = results["metrics"]
         c1, c2, c3 = st.columns(3)
         c1.metric("MAE", f"{m['MAE']:.2f}")
         c2.metric("RMSE", f"{m['RMSE']:.2f}")
-        c3.metric("R²", f"{m['R2']:.3f}")
+        c3.metric("R2", f"{m['R2']:.3f}")
 
-        st.subheader(f"Pronóstico: {target}")
+        st.subheader(f"Pronostico: {target}")
         st.dataframe(results["forecast_df"])
-        st.subheader(f"Gráfico del Pronóstico: {target}")
+        st.subheader(f"Grafico del Pronostico: {target}")
 
         historical = df[["report_year", target]].rename(
             columns={"report_year": "year", target: "actual"}
@@ -223,10 +226,118 @@ def main():
         )
         st.line_chart(data=chart_df)
 
+    elif section == "Subir CSV":
+        st.subheader("Subir y previsualizar CSV")
+        upload = st.file_uploader("Selecciona un CSV para previsualizar", type="csv")
+        if upload:
+            df_up = pd.read_csv(upload)
+            st.success("Archivo cargado. Previsualizando las primeras filas.")
+            st.dataframe(df_up.head(20))
+
+            # Controles para correr el mismo pipeline sobre el CSV subido
+            numeric_cols = [
+                "net_generation_mwh",
+                "capacity_factor",
+                "capacity_mw",
+                "capex_annual_addition",
+                "opex_total_nonfuel",
+            ]
+            available_targets = [c for c in numeric_cols if c in df_up.columns]
+
+            if not available_targets:
+                st.warning("El CSV subido no contiene las columnas numéricas esperadas para el forecast.")
+            else:
+                col1, col2 = st.columns(2)
+                with col1:
+                    target = st.selectbox("Columna objetivo", options=available_targets, index=0, key="upload_target")
+                with col2:
+                    years_ahead = st.slider("Años a predecir", min_value=1, max_value=5, value=3, key="upload_years")
+
+                col3, col4 = st.columns(2)
+                with col3:
+                    model_name = st.selectbox(
+                        "Modelo",
+                        options=[
+                            "LinearRegression",
+                            "RandomForestRegressor",
+                            "GradientBoostingRegressor",
+                            "PolynomialRegression",
+                        ],
+                        index=0,
+                        key="upload_model",
+                    )
+                with col4:
+                    test_years = st.slider(
+                        "Años para test (hold-out crono)",
+                        min_value=1,
+                        max_value=min(10, max(2, len(df_up) - 2)),
+                        value=3,
+                        key="upload_test_years",
+                    )
+
+                poly_degree = 2
+                if model_name == "PolynomialRegression":
+                    poly_degree = st.slider("Grado polinomico", min_value=2, max_value=5, value=2, key="upload_poly")
+
+                log_target = False
+                if df_up[target].min() > 0:
+                    log_target = st.checkbox(
+                        "Usar log1p(y) en el objetivo",
+                        value=False,
+                        key="upload_log",
+                        help="Transforma y -> log(1+y) para ajustar y luego revierte la prediccion.",
+                    )
+                else:
+                    st.info("Log1p desactivado: la serie contiene valores <= 0.")
+
+                st.subheader("Datos históricos (últimas filas) - CSV subido")
+                st.dataframe(df_up.tail(10))
+
+                results = train_and_forecast(
+                    df_up,
+                    target,
+                    model_name,
+                    test_years,
+                    years_ahead,
+                    poly_degree,
+                    log_target,
+                )
+
+                st.subheader(f"Métricas (test cronológico, {test_years} años) - CSV subido")
+                m = results["metrics"]
+                c1, c2, c3 = st.columns(3)
+                c1.metric("MAE", f"{m['MAE']:.2f}")
+                c2.metric("RMSE", f"{m['RMSE']:.2f}")
+                c3.metric("R2", f"{m['R2']:.3f}")
+
+                st.subheader(f"Pronóstico (CSV subido): {target}")
+                st.dataframe(results["forecast_df"])
+                st.subheader(f"Gráfico del Pronóstico (CSV subido): {target}")
+
+                historical = df_up[["report_year", target]].rename(
+                    columns={"report_year": "year", target: "actual"}
+                )
+                pred_hist = pd.DataFrame(
+                    {"year": results["train_years"], "predicted": results["pred_all"]}
+                )
+                pred_future = results["forecast_df"].rename(columns={"prediction": "predicted"})
+                pred_line = pd.concat([pred_hist, pred_future], ignore_index=True)
+
+                chart_df = (
+                    historical.merge(pred_line, on="year", how="outer")
+                    .sort_values("year")
+                    .set_index("year")
+                )
+                st.line_chart(data=chart_df)
+
+            st.info("Como opción a la BD de pudl que pesaba 14GB, puedes subir un CSV más pequeño con los datos relevantes para análisis rápidos.")
+        else:
+            st.info("No se ha cargado ningún archivo.")
+
     else:
-        st.subheader("Galería de imágenes del estudio")
+        st.subheader("Galeria de imagenes del estudio")
         image_summaries = {
-            # "ejemplo.png": "Descripción breve de la imagen."
+            # "ejemplo.png": "Descripcion breve de la imagen."
         }
         img_paths = sorted(
             [
@@ -236,7 +347,7 @@ def main():
             ]
         )
         if not img_paths:
-            st.info(f"No se encontraron imágenes en {IMG_DIR}.")
+            st.info(f"No se encontraron imagenes en {IMG_DIR}.")
         else:
             def bucket_for(name: str) -> str:
                 name_low = name.lower()
