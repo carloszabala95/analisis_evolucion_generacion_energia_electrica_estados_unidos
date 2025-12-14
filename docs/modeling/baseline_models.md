@@ -49,7 +49,6 @@ eficiencia computacional.
 ## Conclusiones
 - El baseline lineal es suficiente para una primera aproximación y para validar el pipeline de datos.
 - Se recomienda comparar con modelos no lineales (RandomForestRegressor, GradientBoostingRegressor, PolynomialRegression) ya incluidos en la app Streamlit, usando las mismas métricas y partición cronológica.
-- Si la R² es baja o las métricas son altas, priorizar modelos más expresivos o incorporar más features (p. ej., variables exógenas).
 
 ## Referencias
 - CSV de referencia: `docs/data/comanche_ferc1_annual.csv` (o CSV cargado por el usuario en la app).
