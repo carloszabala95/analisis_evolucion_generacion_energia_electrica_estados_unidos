@@ -71,9 +71,6 @@ Se utilizará una extensa base de datos SQLite del proyecto PUDL de Catalyst Coo
 - Yefferson Stid Ruiz Cardona (ysruizc@unal.edu.co)
 - Carlos Andrés Zabala Baquero (cazabalab@unal.edu.co)
 
-## Presupuesto - Por Definir
-
-[Descripción del presupuesto asignado al proyecto]
 
 ## Stakeholders
 
