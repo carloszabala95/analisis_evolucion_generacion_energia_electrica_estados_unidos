@@ -22,12 +22,26 @@ En resumen, el proyecto busca ofrecer un análisis descriptivo y comparativo rob
 
 ![alt text](image-2.png)
 
+## Despliegue
+
+- Comando de arranque: uvicorn scripts.app.main:app --host 0.0.0.0 --port ${PORT} (FastAPI). Como actualmente se emplea Streamlit, se hizo: run scripts/app_streamlit.py --server.port $PORT --server.address 0.0.0.0.
+- Comando Build: En Railway se usa el del documento requirements con pip install -r requirements.txt para instalar deps (FastAPI, uvicorn, pandas, scikit-learn, streamlit, etc.).
+- Datos: incluimos docs/data/comanche_ferc1_annual.csv en el repo como muestra; no usamos volumen ni descarga de la BD de 14 GB. Para datos subidos en runtime, la app Streamlit tiene uploader.
+- Rutas FastAPI: /health, /sample, /forecast.
+- Streamlit: sidebar con secciones Pronóstico, Subir CSV, Galería (imágenes en docs/data o IMG_PATH), Videos (MP4 en VIDEO_PATH o base).
+- Variables de entorno: PORT la cual configura Railway; opcionales PUDL_PATH, IMG_PATH, VIDEO_PATH para rutas.
+- URL servicio Streamlit:
+    - https://jubilant-endurance-production.up.railway.app/health
+- Evidencia:
+![alt text](image-3.png)
+
 
 ## Lecciones aprendidas - Por definir
 
-- Identificación de los principales desafíos y obstáculos encontrados durante el proyecto.
-- Lecciones aprendidas en relación al manejo de los datos, el modelamiento y la implementación del modelo.
-- Recomendaciones para futuros proyectos de machine learning.
+- Se intentó realizar un análisis y pronóstico a nivel de condado, pero se presentó un error de memoria insuficiente: el código intentó reservar aproximadamente 5.7 GB de RAM para un arreglo float64 de forma (1, 767,376,005). Con la RAM disponible en Railway (1 GB) no es posible completar esa operación. Esto sugiere que el CSV subido es demasiado grande o que, al transformar/convertir columnas, se está generando un arreglo enorme en memoria.
+- ![alt text](image-4.png)
+- La base de datos utilizada supera los 12 GB, por lo cual se planteó como alternativa subir CSVs desde Streamlit y realizar el análisis de forma individual por planta (por ejemplo, Comanche). Debido a esta limitación, se brinda al usuario final la opción de seleccionar el modelo con el que desea realizar el análisis.
+-![alt text](image-5.png)
 
 ## Impacto del proyecto - Por definir
 
